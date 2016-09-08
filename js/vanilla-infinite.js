@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.1.0
+ * Version: 0.2.0
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -20,9 +20,11 @@ function vanilla_infinite_scroll(el, opts) {
     /* Options */
     self.currentPage = parseInt(self.el.getAttribute('data-currentpage') || opts.currentPage || 1, 10);
     var callbackUrl = self.el.getAttribute('data-callbackurl') || opts.callbackUrl || false;
+    var returnType = self.el.getAttribute('data-returntype') || opts.returnType || 'html';
     var offsetScroll = parseInt(self.el.getAttribute('data-offsetscroll') || opts.offsetScroll || 200, 10);
     var stopInfiniteScroll = false;
     var callbackResponse = opts.callbackResponse || function(self, responseText) {
+        self.el.setAttribute('data-currentpage', self.currentPage);
         self.el.insertAdjacentHTML('beforeend', responseText);
         self.currentPage++;
     };
@@ -73,7 +75,7 @@ function vanilla_infinite_scroll(el, opts) {
         disable_infinite_scroll();
         // Load callbackurl
         var data = {
-            currentPage: self.currentPage
+            page: self.currentPage
         };
         if (callbackUrl) {
             ajaxRequest(callbackUrl, success_callback, data);
@@ -84,11 +86,16 @@ function vanilla_infinite_scroll(el, opts) {
         if (!responseText) {
             self.unset_events();
         }
+        if (returnType == 'json') {
+            responseText = JSON.parse(responseText);
+        }
         callbackResponse(self, responseText);
         // Update scroll max
         resize_event();
         // Enable infinite event
         enable_infinite_scroll();
+        // Try a new scroll event
+        scroll_event();
     }
 
     /* Enable / Disable infinite scroll */

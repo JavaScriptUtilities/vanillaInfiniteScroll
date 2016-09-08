@@ -1,6 +1,6 @@
 {
-    "name": "vanillaInfiniteScroll",
-    "version": "0.1.0",
+    "name": "vanilla-infinitescroll",
+    "version": "0.2.0",
     "description": "Infinite Scroll",
     "main": "js/vanilla-infinite.js",
     "authors": [
