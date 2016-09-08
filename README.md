@@ -1,2 +1,3 @@
 # vanillaInfiniteScroll
+
 Infinite Scroll

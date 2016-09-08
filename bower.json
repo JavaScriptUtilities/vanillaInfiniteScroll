@@ -1,0 +1,30 @@
+{
+    "name": "vanillaInfiniteScroll",
+    "version": "0.1.0",
+    "description": "Infinite Scroll",
+    "main": "js/vanilla-infinite.js",
+    "authors": [
+        "Darklg"
+    ],
+    "license": "MIT",
+    "keywords": [
+        "js",
+        "infinite",
+        "scroll"
+    ],
+    "homepage": "https://github.com/JavaScriptUtilities/vanillaInfiniteScroll",
+    "ignore": [
+        "**/*.css",
+        "**/.*",
+        ".*",
+        "bower.json",
+        "grunt/*",
+        "callbacks/*",
+        "Gruntfile.js",
+        "index.html",
+        "js/script.js",
+        "LICENSE",
+        "package.json",
+        "README.md"
+    ]
+}
