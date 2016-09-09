@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.0
+ * Version: 0.3.1
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -20,15 +20,16 @@ function vanilla_infinite_scroll(el, opts) {
 
     /* Options */
     self.currentPage = parseInt(self.el.getAttribute('data-currentpage') || opts.currentPage || 1, 10);
+    self.nextPage = self.currentPage + 1;
     var overflowItem = (opts.overflowItem || (el.style.overflow == 'auto'));
     var callbackUrl = self.el.getAttribute('data-callbackurl') || opts.callbackUrl || false;
     var returnType = self.el.getAttribute('data-returntype') || opts.returnType || 'html';
-    var offsetScroll = parseInt(self.el.getAttribute('data-offsetscroll') || opts.offsetScroll || 200, 10);
+    var offsetScroll = parseInt(self.el.getAttribute('data-offsetscroll') || opts.offsetScroll || 500, 10);
     var stopInfiniteScroll = false;
     var callbackResponse = opts.callbackResponse || function(self, responseText) {
-        self.el.setAttribute('data-currentpage', self.currentPage);
+        self.el.setAttribute('data-currentpage', self.nextPage);
         self.el.insertAdjacentHTML('beforeend', responseText);
-        self.currentPage++;
+        self.nextPage++;
     };
     var callbackBeforeResponse = opts.callbackBeforeResponse || function(self, responseText) {};
     var callbackAfterResponse = opts.callbackAfterResponse || function(self, responseText) {};
@@ -83,6 +84,11 @@ function vanilla_infinite_scroll(el, opts) {
             return false;
         }
 
+        /* Check visibility */
+        if (!isVisible(self.el)) {
+            return false;
+        }
+
         // Get scroll level
         scrollLevel = overflowItem ? getElementScrollBottom(self.el) : getBodyScrollBottom();
 
@@ -96,7 +102,7 @@ function vanilla_infinite_scroll(el, opts) {
 
         // Load callbackurl
         var data = {
-            page: self.currentPage
+            page: self.nextPage
         };
         if (callbackUrl) {
             ajaxRequest(callbackUrl, success_callback, data);
@@ -144,6 +150,10 @@ function vanilla_infinite_scroll(el, opts) {
     }
 
     /* Utilities */
+
+    function isVisible(elem) {
+        return elem.offsetParent !== null;
+    }
 
     function triggerResize() {
         var e = window.document.createEvent('UIEvents');
