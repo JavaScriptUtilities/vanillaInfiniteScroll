@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.1
+ * Version: 0.3.2
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -18,21 +18,30 @@ function vanilla_infinite_scroll(el, opts) {
     }
     self.el = el;
 
-    /* Options */
-    self.currentPage = parseInt(self.el.getAttribute('data-currentpage') || opts.currentPage || 1, 10);
-    self.nextPage = self.currentPage + 1;
+    /* Options
+    -------------------------- */
+
     var overflowItem = (opts.overflowItem || (el.style.overflow == 'auto'));
     var callbackUrl = self.el.getAttribute('data-callbackurl') || opts.callbackUrl || false;
     var returnType = self.el.getAttribute('data-returntype') || opts.returnType || 'html';
     var offsetScroll = parseInt(self.el.getAttribute('data-offsetscroll') || opts.offsetScroll || 500, 10);
     var stopInfiniteScroll = false;
+
+    /* Callbacks */
+    var callbackBeforeResponse = opts.callbackBeforeResponse || function(self, responseText) {};
+    var callbackAfterResponse = opts.callbackAfterResponse || function(self, responseText) {};
     var callbackResponse = opts.callbackResponse || function(self, responseText) {
         self.el.setAttribute('data-currentpage', self.nextPage);
         self.el.insertAdjacentHTML('beforeend', responseText);
-        self.nextPage++;
+        self.nextPage = self.incrementationMethod(self.nextPage);
     };
-    var callbackBeforeResponse = opts.callbackBeforeResponse || function(self, responseText) {};
-    var callbackAfterResponse = opts.callbackAfterResponse || function(self, responseText) {};
+
+    /* Pagination */
+    self.incrementationMethod = opts.incrementationMethod || function(pageNb) {
+        return pageNb + 1;
+    };
+    self.currentPage = parseInt(self.el.getAttribute('data-currentpage') || opts.currentPage || 1, 10);
+    self.nextPage = parseInt(self.el.getAttribute('data-currentpage') || opts.currentPage || self.incrementationMethod(self.currentPage), 10);
 
     /* Internal settings */
     var canInfiniteScroll = true,
@@ -44,6 +53,9 @@ function vanilla_infinite_scroll(el, opts) {
         /* Overflow auto, check events  */
         scrollListener = el;
     }
+
+    /* Methods
+    -------------------------- */
 
     function init() {
         self.set_events();
@@ -149,7 +161,8 @@ function vanilla_infinite_scroll(el, opts) {
         self.el.setAttribute('data-loading', 'true');
     }
 
-    /* Utilities */
+    /* Generic Utilities
+    -------------------------- */
 
     function isVisible(elem) {
         return elem.offsetParent !== null;
