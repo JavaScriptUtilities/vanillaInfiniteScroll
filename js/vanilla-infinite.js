@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.3
+ * Version: 0.3.4
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -119,7 +119,7 @@ function vanilla_infinite_scroll(el, opts) {
         };
 
         (function() {
-            if (moreDatas) {
+            if (!moreDatas) {
                 return;
             }
             if (typeof moreDatas != 'object') {
