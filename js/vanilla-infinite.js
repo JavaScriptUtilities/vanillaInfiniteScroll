@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.2
+ * Version: 0.3.3
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -23,6 +23,7 @@ function vanilla_infinite_scroll(el, opts) {
 
     var overflowItem = (opts.overflowItem || (el.style.overflow == 'auto'));
     var callbackUrl = self.el.getAttribute('data-callbackurl') || opts.callbackUrl || false;
+    var moreDatas = self.el.getAttribute('data-moredatas') || opts.moreDatas || {};
     var returnType = self.el.getAttribute('data-returntype') || opts.returnType || 'html';
     var offsetScroll = parseInt(self.el.getAttribute('data-offsetscroll') || opts.offsetScroll || 500, 10);
     var stopInfiniteScroll = false;
@@ -116,6 +117,19 @@ function vanilla_infinite_scroll(el, opts) {
         var data = {
             page: self.nextPage
         };
+
+        (function() {
+            if (moreDatas) {
+                return;
+            }
+            if (typeof moreDatas != 'object') {
+                moreDatas = JSON.parse(moreDatas);
+            }
+            for (var attrname in moreDatas) {
+                data[attrname] = moreDatas[attrname];
+            }
+        }());
+
         if (callbackUrl) {
             ajaxRequest(callbackUrl, success_callback, data);
         }
