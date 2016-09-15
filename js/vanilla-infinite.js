@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.6
+ * Version: 0.3.7
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -152,12 +152,13 @@ function vanilla_infinite_scroll(el, opts) {
         callbackResponse(self, responseText);
         callbackAfterResponse(self, responseText);
 
-        // Trigger resize to update values
+        // Update values
         setTimeout(function() {
-            triggerResize();
+            resize_event();
         }, 50);
 
         setTimeout(function() {
+            resize_event();
             // Enable infinite event
             enable_infinite_scroll();
 
