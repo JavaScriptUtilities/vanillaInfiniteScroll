@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.5
+ * Version: 0.3.6
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -47,6 +47,7 @@ function vanilla_infinite_scroll(el, opts) {
     /* Internal settings */
     var canInfiniteScroll = true,
         isElementVisible = true,
+        elHeight = 0,
         scrollLevel = 0,
         scrollMax = 0,
         scrollListener = window;
@@ -78,8 +79,13 @@ function vanilla_infinite_scroll(el, opts) {
     };
 
     function resize_event() {
-        /* Set Scroll Max */
+
         if (overflowItem) {
+            /* Check visibility */
+            isElementVisible = isVisible(self.el);
+            /* Check height */
+            elHeight = self.el.offsetHeight;
+            /* Set Scroll Max */
             scrollMax = self.el.scrollHeight - offsetScroll;
             return false;
         }
@@ -88,8 +94,6 @@ function vanilla_infinite_scroll(el, opts) {
         var elBounds = self.el.getBoundingClientRect();
         scrollMax = getBodyScrollTop() + elBounds.top + elBounds.height - offsetScroll;
 
-        /* Check visibility */
-        isElementVisible = isVisible(self.el);
     }
 
     function scroll_event() {
@@ -102,9 +106,8 @@ function vanilla_infinite_scroll(el, opts) {
         if (!canInfiniteScroll || !isElementVisible) {
             return false;
         }
-
         // Get scroll level
-        scrollLevel = overflowItem ? getElementScrollBottom(self.el) : getBodyScrollBottom();
+        scrollLevel = overflowItem ? getElementScrollBottom() : getBodyScrollBottom();
 
         // If scroll level not over scrollmax
         if (scrollLevel < scrollMax) {
@@ -205,8 +208,8 @@ function vanilla_infinite_scroll(el, opts) {
         });
     }
 
-    function getElementScrollBottom(elem) {
-        return elem.scrollTop + elem.offsetHeight;
+    function getElementScrollBottom() {
+        return self.el.scrollTop + elHeight;
     }
 
     function getBodyScrollTop() {
