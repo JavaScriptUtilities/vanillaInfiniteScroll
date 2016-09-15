@@ -1,6 +1,6 @@
 /*
  * Plugin Name: Vanilla-JS Infinite Scroll
- * Version: 0.3.4
+ * Version: 0.3.5
  * Plugin URL: https://github.com/Darklg/JavaScriptUtilities
  * JavaScriptUtilities Vanilla-JS may be freely distributed under the MIT license.
  */
@@ -46,6 +46,7 @@ function vanilla_infinite_scroll(el, opts) {
 
     /* Internal settings */
     var canInfiniteScroll = true,
+        isElementVisible = true,
         scrollLevel = 0,
         scrollMax = 0,
         scrollListener = window;
@@ -82,8 +83,13 @@ function vanilla_infinite_scroll(el, opts) {
             scrollMax = self.el.scrollHeight - offsetScroll;
             return false;
         }
+
+        /* Count scroll max */
         var elBounds = self.el.getBoundingClientRect();
         scrollMax = getBodyScrollTop() + elBounds.top + elBounds.height - offsetScroll;
+
+        /* Check visibility */
+        isElementVisible = isVisible(self.el);
     }
 
     function scroll_event() {
@@ -93,12 +99,7 @@ function vanilla_infinite_scroll(el, opts) {
             return false;
         }
 
-        if (!canInfiniteScroll) {
-            return false;
-        }
-
-        /* Check visibility */
-        if (!isVisible(self.el)) {
+        if (!canInfiniteScroll || !isElementVisible) {
             return false;
         }
 
